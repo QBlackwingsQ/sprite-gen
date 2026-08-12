@@ -21,4 +21,8 @@ The following external contributors have changes incorporated into the current `
 - [PR #7](https://github.com/aldegad/sprite-gen/pull/7): fixed Windows provider CLI resolution and UTF-8 subprocess I/O.
 - [PR #9](https://github.com/aldegad/sprite-gen/pull/9): added the Windows `LockFileEx` backend for shared readers and exclusive publishers.
 
+## [@monibu1548](https://github.com/monibu1548)
+
+- [PR #11](https://github.com/aldegad/sprite-gen/pull/11): made vertical centering work in the pixel-unfake row-placement path and exposed per-frame vertical grounding through the CLI.
+
 Thank you for testing the project in real environments, documenting the failures clearly, and contributing fixes that now ship as part of `sprite-gen`.

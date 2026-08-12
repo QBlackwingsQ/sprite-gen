@@ -36,6 +36,8 @@ def test_prepare_records_fit_cli_flags_in_request(tmp_path: Path) -> None:
         "--request-json", '{"fit": {"resample": "lanczos", "palette_size": 24}}',
         "--fit-resample", "kcentroid",
         "--fit-align-x", "foot-centroid",
+        "--fit-align-y", "center",
+        "--no-fit-ground-frames",
         "--fit-pixel-unfake",
         "--fit-logical-height", "64",
         "--fit-outline", "0.5",
@@ -46,6 +48,8 @@ def test_prepare_records_fit_cli_flags_in_request(tmp_path: Path) -> None:
     assert request["fit"] == {
         "resample": "kcentroid",  # CLI overrides the --request-json value
         "align_x": "foot-centroid",
+        "align_y": "center",
+        "ground_frames": False,
         "pixel_unfake": True,
         "logical_height": 64,
         "outline": 0.5,
