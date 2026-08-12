@@ -74,6 +74,7 @@ def test_provider_run_uses_scrubbed_env(tmp_path: Path, monkeypatch) -> None:
     # Both providers must route their subprocess.run through the scrubbed env.
     import sprite_gen.gen.grok_provider as grok_provider
 
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path))
     seen: dict[str, dict | None] = {}
 
     class _Completed:
@@ -130,6 +131,7 @@ def test_provider_run_uses_scrubbed_env(tmp_path: Path, monkeypatch) -> None:
 def test_provider_commands_use_the_single_resolved_binary(tmp_path: Path, monkeypatch) -> None:
     import sprite_gen.gen.grok_provider as grok_provider
 
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path))
     seen: dict[str, list[str]] = {}
     monkeypatch.setattr(codex_provider, "provider_binary", lambda _name: "C:/bin/codex.CMD")
     monkeypatch.setattr(grok_provider, "provider_binary", lambda _name: "C:/bin/grok.CMD")
