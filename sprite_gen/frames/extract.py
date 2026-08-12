@@ -1861,6 +1861,12 @@ def register_row_frames(frames: list, slack_x: int = 8, slack_y: int = 3) -> lis
     return registered
 
 
+def _content_center_top(sprite: Image.Image, cell_height: int) -> int:
+    bbox = sprite.getbbox()
+    content_top, content_bottom = bbox[1::2] if bbox else (0, sprite.height)
+    return round((cell_height - (content_bottom - content_top)) / 2) - content_top
+
+
 def row_placement(frames: list, cell_width: int, cell_height: int, safe_margin_y: int, scale: int, fit: dict[str, Any]) -> tuple[int, int]:
     # 가로 배치 오프셋은 행 union 기준으로 1회 계산해 전 프레임에 동일 적용한다
     # (플립 대칭·수평 안정). 세로는 place_row_frame 이 프레임별로 접지한다.
@@ -1881,13 +1887,15 @@ def row_placement(frames: list, cell_width: int, cell_height: int, safe_margin_y
         left = (cell_width - sprite.width) // 2
     left = max(0, min(cell_width - sprite.width, left))
     left -= left % scale
+    if str(fit.get("align_y", "bottom")).lower() == "center":
+        return left, _content_center_top(sprite, cell_height)
     bbox = sprite.getbbox()
     content_bottom = bbox[3] if bbox else sprite.height
     top = max(0, cell_height - safe_margin_y - content_bottom)
     return left, top
 
 
-def place_row_frame(frame: Image.Image, cell_width: int, cell_height: int, scale: int, left: int, top: int, safe_margin_y: int | None = None, ground: bool = True) -> Image.Image:
+def place_row_frame(frame: Image.Image, cell_width: int, cell_height: int, scale: int, left: int, top: int, safe_margin_y: int | None = None, ground: bool = True, align_y: str = "bottom") -> Image.Image:
     # 2026-07-04 (maintainer): 세로는 프레임마다 콘텐츠 바닥을 공유 기준선에 접지한다 —
     # 행 union 공동 top 만 쓰면 소스 스트립의 상하 요동이 이동으로 남아 프레임 간
     # "무게감"(발밑 높이)이 들쭉해진다. perfectpixel-studio 의 프레임별 알파 가중
@@ -1898,7 +1906,9 @@ def place_row_frame(frame: Image.Image, cell_width: int, cell_height: int, scale
         return target
     sprite = frame.resize((frame.width * scale, frame.height * scale), Image.Resampling.NEAREST)
     frame_top = top
-    if ground and safe_margin_y is not None:
+    if ground and str(align_y).lower() == "center":
+        frame_top = _content_center_top(sprite, cell_height)
+    elif ground and safe_margin_y is not None:
         bbox = sprite.getbbox()
         content_bottom = bbox[3] if bbox else sprite.height
         frame_top = max(0, cell_height - safe_margin_y - content_bottom)
@@ -3057,11 +3067,12 @@ def _run_locked(args: argparse.Namespace, run_dir: Path):
             # alpha-centroid 는 프레임별 가로 배치 — 행 union 공동 left 로는
             # register_row_frames 의 정합 잔차가 지터로 남는다.
             per_frame_centroid = str(fit_config.get("align_x", "foot-centroid")).lower() == "alpha-centroid"
+            align_y = str(fit_config.get("align_y", "bottom")).lower()
             frames = [
                 place_row_frame(
                     frame, cell_width, cell_height, pp_scale,
                     _alpha_centroid_row_left(frame, cell_width, pp_scale) if per_frame_centroid else left,
-                    top, safe_margin_y, ground_frames)
+                    top, safe_margin_y, ground_frames, align_y)
                 for frame in quantized
             ]
             # 전/후 비교 쌍둥이: 픽셀 언페이크 프레임의 최종 콘텐츠 bbox 와 같은 풋프린트에
