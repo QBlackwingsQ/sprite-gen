@@ -1,6 +1,6 @@
 # Contributors
 
-The following external contributors have changes incorporated into the current `sprite-gen` codebase.
+The following external contributors have work that is incorporated into, or materially informed, the current `sprite-gen` codebase.
 
 ## [@devswha](https://github.com/devswha)
 
@@ -25,4 +25,8 @@ The following external contributors have changes incorporated into the current `
 
 - [PR #11](https://github.com/aldegad/sprite-gen/pull/11): made vertical centering work in the pixel-unfake row-placement path and exposed per-frame vertical grounding through the CLI.
 
-Thank you for testing the project in real environments, documenting the failures clearly, and contributing fixes that now ship as part of `sprite-gen`.
+## [@seunghan91](https://github.com/seunghan91)
+
+- [PR #3](https://github.com/aldegad/sprite-gen/pull/3): proposed lowering the default chroma key threshold from `96` to `80` after a 705-case offline sweep. The PR was not merged, but its benchmark prompted a real-pipeline comparison that confirmed `96` as the canonical default.
+
+Thank you for testing the project in real environments, documenting failures clearly, and contributing fixes or experiments that inform `sprite-gen`.
