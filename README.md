@@ -246,7 +246,7 @@ contract.
 
 The component-row workflow is inspired by the Apache-2.0 licensed `hatch-pet` skill, but targets generic game sprite atlases and includes no pet packages or pet visual assets.
 
-Accepted community contributions and their originating pull requests are listed in [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+Community contributions, experiments, and their originating pull requests are documented in [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
 
 ## License
 
